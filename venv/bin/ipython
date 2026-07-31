@@ -1,6 +1,0 @@
-#!/Users/foxrabbit/vscode_2026/andrew_ng_agantic_ai/venv/bin/python
-import sys
-from IPython import start_ipython
-if __name__ == '__main__':
-    sys.argv[0] = sys.argv[0].removesuffix('.exe')
-    sys.exit(start_ipython())
