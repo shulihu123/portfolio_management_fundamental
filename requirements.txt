@@ -33,6 +33,9 @@ pandas
 seaborn
 tabulate
 tinydb
+numpy
+scipy
+
 
 # === Machine Learning / NLP (Optional Enhancements) ===
 jinja2
