@@ -7,7 +7,7 @@ import seaborn as sns
 
 '''
 
-Calculate volatility
+Calculate volatility manually
 
 '''
 
@@ -22,10 +22,12 @@ variance = (deviations**2).sum()/(returns.shape[0]-1)
 std = np.sqrt(variance)
 
 #dataframe std() and std() functions 
-print("\nvariance: \n", variance, "\n", returns.var())
-print("\nstd: \n", std, "\n", returns.std())
+print("\nvariance manual: \n", variance, "\n"
+      "\nvariance built-in \n", returns.var())
+print("\nstd manual: \n", std, "\n"
+      "\nstd built-in\n", returns.std())
 
-print(type(returns.std()))
+
 
 #annualize volatility
 annual_volatility = returns.std() * np.sqrt(12)

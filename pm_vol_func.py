@@ -2,8 +2,7 @@ import numpy as np
 import pandas as pd
 from numpy import random
 import matplotlib.pyplot as plt
-import seaborn as sns
-
+from pm_hfi import *
 
 def read_me_returns():
     returns = pd.read_csv("data_pm/Portfolios_Formed_on_ME_monthly_EW.csv", header=0, index_col=0, na_values=-99.99)
@@ -28,7 +27,6 @@ def annual_return(returns: pd.DataFrame):
     return annual_return
 
 print("\nAnnual Return: \n", annual_return(returns))
-
 
 def sharpe_ratio(returns: pd.DataFrame, rfr: float):
     annual_ret = annual_return(returns)
@@ -67,8 +65,9 @@ def get_hfi_returns():
     hfi = hfi/100
     hfi.index = hfi.index.to_period('M')
     return hfi
-    
 
+
+print(returns.agg(["mean", "median", "std", "skew", "kurt"]))
 
 
 
