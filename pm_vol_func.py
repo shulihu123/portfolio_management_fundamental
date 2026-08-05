@@ -52,7 +52,7 @@ def max_drawdown_y(returns: pd.DataFrame):
 if __name__ == "__main__":
     returns = read_me_returns()
  
-    print(returns.agg(["mean", "median", "std", "skew", "kurt"]))
+    basic_stats = returns.agg(["mean", "median", "std", "skew", "kurt"])
 
     perform_stats = pd.DataFrame({
         "Annual Return": annual_return(returns),
@@ -60,10 +60,22 @@ if __name__ == "__main__":
         "Max Drawdown": max_drawdown(returns),
         "Max Drawdown Year": max_drawdown_y(returns),
         "Sharpe Ratio": sharpe_ratio(returns, 0.03)
-    })
+    }).T
 
-    print("\nPerformance Summary: \n", perform_stats.T)
-    drawdown(returns).plot(title="Portfolio Drawdown")
+    print("\nPerformance Summary: \n", perform_stats)
+    print("\nBasic Summary: \n",basic_stats)
+
+
+with pd.ExcelWriter("output/performance_stats.xlsx", engine="openpyxl") as writer:
+    perform_stats.to_excel(writer, sheet_name="Performance")
+    basic_stats.to_excel(writer, sheet_name="Basics")
+  
+    
+
+
+drawdown(returns).plot(title="Portfolio Drawdown")
+# plt.show()
+
 
 
 
