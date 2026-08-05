@@ -28,7 +28,6 @@ print("\nstd manual: \n", std, "\n"
       "\nstd built-in\n", returns.std())
 
 
-
 #annualize volatility
 annual_volatility = returns.std() * np.sqrt(12)
 print("\nannual volatility: \n", annual_volatility)

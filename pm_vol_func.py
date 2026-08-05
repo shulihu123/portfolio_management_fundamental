@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from numpy import random
 import matplotlib.pyplot as plt
-from pm_hfi import *
+
 
 def read_me_returns():
     returns = pd.read_csv("data_pm/Portfolios_Formed_on_ME_monthly_EW.csv", header=0, index_col=0, na_values=-99.99)
@@ -13,20 +13,16 @@ def read_me_returns():
     returns.index = pd.to_datetime(returns.index,format="%Y%m").to_period("M")
     return returns
 
-returns = read_me_returns()
 
 def volatility(returns: pd.DataFrame):
     annual_vol = returns.std()*np.sqrt(12)
     return annual_vol
 
-print("\nAnnual volatility: ", volatility(returns))
 
 def annual_return(returns: pd.DataFrame):
     n_month = returns.shape[0]
     annual_return = (returns+1).prod()**(12/n_month)-1
     return annual_return
-
-print("\nAnnual Return: \n", annual_return(returns))
 
 def sharpe_ratio(returns: pd.DataFrame, rfr: float):
     annual_ret = annual_return(returns)
@@ -34,7 +30,6 @@ def sharpe_ratio(returns: pd.DataFrame, rfr: float):
     sharpe_ratio = (annual_ret - rfr) / annual_vol
     return sharpe_ratio
 
-print("\nSharpe Ratio: \n", sharpe_ratio(returns, 0.03))
 
 """
 
@@ -42,32 +37,46 @@ calcualte drawdown and max drawdown
 
 """
 
-def max_drawdown(returns_pd: pd.DataFrame):
-    wealth_index = 1000*(1+returns_pd).cumprod()
+def drawdown(returns: pd.DataFrame):
+    wealth_index = (1+returns).cumprod()
     previous_peaks = wealth_index.cummax()
-    drawdown = (wealth_index-previous_peaks)/previous_peaks
+    drawdown = (wealth_index - previous_peaks) / previous_peaks
+    return drawdown
 
-    return pd.DataFrame([drawdown.idxmin(), drawdown.min()], index=["year-month", "max drawdown"])
+def max_drawdown(returns: pd.DataFrame):
+    return drawdown(returns).min()
 
-print("\nmax drawdown: \n", max_drawdown(returns))            
+def max_drawdown_y(returns: pd.DataFrame):
+    return drawdown(returns).idxmin()
 
-"""
-Analyze on Hedge Fund Index returns
-"""
+if __name__ == "__main__":
+    returns = read_me_returns()
+ 
+    print(returns.agg(["mean", "median", "std", "skew", "kurt"]))
 
-def get_hfi_returns():
-    """
-    Load and format the Hedge Fund Index Returns
-    """
+    perform_stats = pd.DataFrame({
+        "Annual Return": annual_return(returns),
+        "Annual Volatility": volatility(returns),
+        "Max Drawdown": max_drawdown(returns),
+        "Max Drawdown Year": max_drawdown_y(returns),
+        "Sharpe Ratio": sharpe_ratio(returns, 0.03)
+    })
 
-    hfi = pd.read_csv("data_pm/edhec-hedgefundindices.csv", 
-                      header=0, index_col=0, parse_dates=True)
-    hfi = hfi/100
-    hfi.index = hfi.index.to_period('M')
-    return hfi
+    print("\nPerformance Summary: \n", perform_stats.T)
+    drawdown(returns).plot(title="Portfolio Drawdown")
 
 
-print(returns.agg(["mean", "median", "std", "skew", "kurt"]))
+
+
+
+
+
+
+
+
+   
+
+
 
 
 
